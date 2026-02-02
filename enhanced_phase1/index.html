@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced SLM-RAG Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .chat-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        .chat-box {
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #e1e1e1;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .user-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Enhanced SLM-RAG Chatbot</h1>
+        <div class="chat-box" id="chatBox"></div>
+        <input type="text" id="userInput" class="user-input" placeholder="Type your message here..." />
+        <button class="btn" id="sendButton">Send</button>
+    </div>
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+
+        sendButton.addEventListener('click', () => {
+            const userText = userInput.value;
+            if (userText) {
+                appendMessage('User', userText);
+                sendMessageToBackend(userText);
+                userInput.value = '';
+            }
+        });
+
+        function appendMessage(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = sender + ': ' + message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function sendMessageToBackend(message) {
+            fetch('http://your-flask-backend-endpoint', { // Change this to your Flask backend URL
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: message})
+            })
+            .then(response => response.json())
+            .then(data => {
+                appendMessage('Bot', data.response); // Adjust according to the actual response structure
+            })
+            .catch(error => {
+                appendMessage('Bot', 'Error: ' + error);
+            });
+        }
+    </script>
+</body>
+</html>
